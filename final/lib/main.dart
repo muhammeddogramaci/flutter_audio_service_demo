@@ -81,6 +81,9 @@ class Playlist extends StatelessWidget {
             itemBuilder: (context, index) {
               return ListTile(
                 title: Text('${playlistTitles[index]}'),
+                onTap: () {
+                  pageManager.play();
+                },
               );
             },
           );
