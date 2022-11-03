@@ -25,6 +25,8 @@ class DemoPlaylist extends PlaylistRepository {
       'title': 'Canlı Yayın',
       'album': 'SoundHelix',
       'url': 'https://ssl120.radyotelekom.com.tr/8106/stream',
+      'image':
+          'https://upload.wikimedia.org/wikipedia/commons/e/e3/Billie_Holiday%2C_Downbeat%2C_New_York%2C_N.Y.%2C_ca._Feb._1947_%28William_P._Gottlieb_04251%29.jpg',
     };
   }
 }

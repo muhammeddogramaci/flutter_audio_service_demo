@@ -2,7 +2,7 @@ import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'notifiers/play_button_notifier.dart';
 import 'notifiers/progress_notifier.dart';
-import 'notifiers/repeat_button_notifier.dart';
+
 import 'page_manager.dart';
 import 'services/service_locator.dart';
 
@@ -39,7 +39,6 @@ class _MyAppState extends State<MyApp> {
             children: [
               CurrentSongTitle(),
               Playlist(),
-              AddRemoveSongButtons(),
               AudioProgressBar(),
               AudioControlButtons(),
             ],
@@ -80,6 +79,17 @@ class Playlist extends StatelessWidget {
             itemCount: playlistTitles.length,
             itemBuilder: (context, index) {
               return ListTile(
+                leading: Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: NetworkImage(
+                        'https://upload.wikimedia.org/wikipedia/commons/e/e3/Billie_Holiday%2C_Downbeat%2C_New_York%2C_N.Y.%2C_ca._Feb._1947_%28William_P._Gottlieb_04251%29.jpg',
+                      ),
+                    ),
+                  ),
+                ),
                 title: Text('${playlistTitles[index]}'),
                 onTap: () {
                   pageManager.play();
@@ -88,30 +98,6 @@ class Playlist extends StatelessWidget {
             },
           );
         },
-      ),
-    );
-  }
-}
-
-class AddRemoveSongButtons extends StatelessWidget {
-  const AddRemoveSongButtons({Key? key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    final pageManager = getIt<PageManager>();
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          FloatingActionButton(
-            onPressed: pageManager.add,
-            child: Icon(Icons.add),
-          ),
-          FloatingActionButton(
-            onPressed: pageManager.remove,
-            child: Icon(Icons.remove),
-          ),
-        ],
       ),
     );
   }
@@ -145,59 +131,9 @@ class AudioControlButtons extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          RepeatButton(),
-          PreviousSongButton(),
           PlayButton(),
-          NextSongButton(),
-          ShuffleButton(),
         ],
       ),
-    );
-  }
-}
-
-class RepeatButton extends StatelessWidget {
-  const RepeatButton({Key? key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    final pageManager = getIt<PageManager>();
-    return ValueListenableBuilder<RepeatState>(
-      valueListenable: pageManager.repeatButtonNotifier,
-      builder: (context, value, child) {
-        Icon icon;
-        switch (value) {
-          case RepeatState.off:
-            icon = Icon(Icons.repeat, color: Colors.grey);
-            break;
-          case RepeatState.repeatSong:
-            icon = Icon(Icons.repeat_one);
-            break;
-          case RepeatState.repeatPlaylist:
-            icon = Icon(Icons.repeat);
-            break;
-        }
-        return IconButton(
-          icon: icon,
-          onPressed: pageManager.repeat,
-        );
-      },
-    );
-  }
-}
-
-class PreviousSongButton extends StatelessWidget {
-  const PreviousSongButton({Key? key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    final pageManager = getIt<PageManager>();
-    return ValueListenableBuilder<bool>(
-      valueListenable: pageManager.isFirstSongNotifier,
-      builder: (_, isFirst, __) {
-        return IconButton(
-          icon: Icon(Icons.skip_previous),
-          onPressed: (isFirst) ? null : pageManager.previous,
-        );
-      },
     );
   }
 }
@@ -231,42 +167,6 @@ class PlayButton extends StatelessWidget {
               onPressed: pageManager.pause,
             );
         }
-      },
-    );
-  }
-}
-
-class NextSongButton extends StatelessWidget {
-  const NextSongButton({Key? key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    final pageManager = getIt<PageManager>();
-    return ValueListenableBuilder<bool>(
-      valueListenable: pageManager.isLastSongNotifier,
-      builder: (_, isLast, __) {
-        return IconButton(
-          icon: Icon(Icons.skip_next),
-          onPressed: (isLast) ? null : pageManager.next,
-        );
-      },
-    );
-  }
-}
-
-class ShuffleButton extends StatelessWidget {
-  const ShuffleButton({Key? key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    final pageManager = getIt<PageManager>();
-    return ValueListenableBuilder<bool>(
-      valueListenable: pageManager.isShuffleModeEnabledNotifier,
-      builder: (context, isEnabled, child) {
-        return IconButton(
-          icon: (isEnabled)
-              ? Icon(Icons.shuffle)
-              : Icon(Icons.shuffle, color: Colors.grey),
-          onPressed: pageManager.shuffle,
-        );
       },
     );
   }
